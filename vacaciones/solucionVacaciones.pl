@@ -32,9 +32,13 @@ atraccion(pehuenia, cerro(bateaMahuida, 2000)).
 atraccion(pehuenia, cuerpoDeAgua(moquehue, permitidoPescar, 14)).
 atraccion(pehuenia, cuerpoDeAgua(alumine, permitidoPescar, 19)).
 
-esAtraccionCopada(Atraccion) :-
-    atraccion(_, Atraccion),
-    esCopada(Atraccion).
+vacacionesCopadas(Persona) :-
+    destino(Persona, Destino),
+    atraccion(Destino, _),
+    forall(
+        (destino(Persona, Destino), atraccion(Destino, Atraccion)),
+        esCopada(Atraccion)
+    ).
 
 esCopada(cerro(_, MetrosAltura)) :- MetrosAltura > 2000.
 esCopada(cuerpoDeAgua(_, permitidoPescar, _)).
