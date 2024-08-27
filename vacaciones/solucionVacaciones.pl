@@ -15,10 +15,8 @@ destino(nico, marDelPlata).
 destino(vale, calafate).
 destino(vale, elBolson).
 % Martu se va donde vayan Nico y Alf.
-destino(martu, Ciudad) :-
-    destino(nico, Ciudad).
-destino(martu, Ciudad) :-
-    destino(alf, Ciudad).
+destino(martu, Lugar) :- destino(nico, Lugar).
+destino(martu, Lugar) :- destino(alf, Lugar).
 
 % Como juan no sabe si va a ir a villaGessel o a federacion, todavia no puedo representarlo con un hecho, ya que esto confirmaria que se va a alguno
 % de los dos destinos. Por lo que si no sabemos cual es el hecho todavia, entonces los suponemos falso y no lo agregamos ya que prolog trabaja con el
@@ -28,40 +26,33 @@ destino(martu, Ciudad) :-
 % Punto 2
 atraccion(esquel, parqueNacional(losAlerces)).
 atraccion(esquel, excursion(trochita)).
-atraccion(esquel, excursion(travelin)).
+atraccion(esquel, excursion(trevelin)).
 
 atraccion(pehuenia, cerro(bateaMahuida, 2000)).
 atraccion(pehuenia, cuerpoDeAgua(moquehue, permitidoPescar, 14)).
-atraccion(pehuenia, cuerpoDeAgua(alumine, permitidoPescar, 22)).
+atraccion(pehuenia, cuerpoDeAgua(alumine, permitidoPescar, 19)).
 
-esAtraccionCopada(Atraccion):-
+esAtraccionCopada(Atraccion) :-
     atraccion(_, Atraccion),
     esCopada(Atraccion).
 
+esCopada(cerro(_, MetrosAltura)) :- MetrosAltura > 2000.
+esCopada(cuerpoDeAgua(_, permitidoPescar, _)).
+esCopada(cuerpoDeAgua(_, _, Temperatura)) :- Temperatura > 20.
+esCopada(playa(DiferenciaDeMarea)):- DiferenciaDeMarea < 5.
+esCopada(excursion(Nombre)) :- atom_length(Nombre, CantLetras), CantLetras > 7.
 esCopada(parqueNacional(_)).
-
-esCopada(cerro(_, Metros)):-
-    Metros > 2000.
-
-esCopada(excursion(_)).  
-
-esCopada(cuerpoDeAgua(_, sePuedePesca, Temperatura)):-
-    Temperatura > 20.
-
-esCopada(playa(DiferenciaDeMarea)):-
-    DiferenciaDeMarea < 5.
 
 % Punto 3
 % Personas que no se cruzaron en ningún destino (intente con 'distinct' pero no pude)
 noSeCruzaron(Persona1, Persona2) :-
     destino(Persona1, _),
     destino(Persona2, _),
-    Persona1 \= Persona2,
+    Persona1 \= Persona2,  % primero deben ser dos personas /=
     forall(
         destino(Persona1, Ciudad), 
         not(destino(Persona2, Ciudad))
     ).
-
 
 % Punto 4
 % Costos de vida
@@ -78,9 +69,9 @@ costoDeVida(marDelPlata, 140).
 
 % Vacaciones gasoleras
 vacacionesGasoleras(Persona) :-
-    distinct(Persona, (destino(Persona, _),
-    forall(destino(Persona, Ciudad), (costoDeVida(Ciudad, Costo), Costo < 160))
-    )).
+    distinct(Persona, (destino(Persona, _), 
+        forall(destino(Persona, Ciudad), (costoDeVida(Ciudad, Costo), Costo < 160)))
+    ).
 
 % Punto 5    
 % Itinerarios posibles
@@ -99,5 +90,3 @@ seleccionar(Elemento, [Otro|Resto], [Otro|RestoSeleccionado]) :-
 
     % Todo algoritmo recursivo necesita al menos un caso base y al menos un caso recursivo. Esto define
     % entonces que los predicados son no determinísticos: intervendrá el mecanismo de backtracking.
-
-
