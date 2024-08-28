@@ -38,14 +38,19 @@ foreverAlone(Persona, Dia, HorarioPuntual) :-
     
 % Punto 4
 posibilidadesAtencion(Dia, Personas):-
-    findall(Persona, distinct(Persona, quienAtiende(Persona, Dia, _)), PersonasPosibles),
-    combinar(PersonasPosibles, Personas).
+  findall(Persona, distinct(Persona, quienAtiende(Persona, Dia, _)), PersonasPosibles),
+  combinar(PersonasPosibles, Personas).
+
+combinar([], []).
+combinar([Persona|PersonasPosibles], [Persona|Personas]):-
+  combinar(PersonasPosibles, Personas).
+combinar([_|PersonasPosibles], Personas):-
+  combinar(PersonasPosibles, Personas).
+
   
-  combinar([], []). % CB
-  combinar([Persona|PersonasPosibles], [Persona|Personas]) :- % CR
-    combinar(PersonasPosibles, Personas).
-  combinar([_|PersonasPosibles], Personas) :-
-    combinar(PersonasPosibles, Personas).
+% Qué conceptos en conjunto resuelven este requerimiento
+% - findall como herramienta para poder generar un conjunto de soluciones que satisfacen un predicado
+% - mecanismo de backtracking de Prolog permite encontrar todas las soluciones posibles
 
 % Punto 5
 venta(dodain, fecha(10, 8), [golosinas(1200), cigarrillos(jockey), golosinas(50)]).
