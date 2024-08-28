@@ -77,15 +77,15 @@ autorTuvoTraspie(Autor) :-
 % Punto 4
 % Edición loca: queremos armar un resumen de la semana con una combinación posible de artículos amarillistas 
 % que no superen las 50 visitas en total. El predicado debe ser inversible.
-edicionLoca(Articulos) :-
-    findall(Articulo, articuloAmarillista(Articulo), ArticulosAmarillistas),
-    combinacionPosible(ArticulosPosibles, Articulos, Visitas).
-
-combinacionPosible([], [], 0).
-combinacionPosible([Articulo|ArticulosPosibles], [Articulo|Articulos], TotalVisitas) :-
-    combinacionPosible(ArticulosPosibles, Articulos, VisitasRestantes),
-    noticia(_, Articulo, CantVisitas),
-    TotalVisitas is CantVisitas + VisitasRestantes.
-combinacionPosible([_|ArticulosPosibles], Articulo, TotalVisitas) :-
-    combinacionPosible(ArticulosPosibles, Articulos, TotalVisitas).
-    
+edicionLoca(Articulos, Visitas):-
+    findall(Articulo, articuloAmarillista(Articulo), ArticulosPosibles),
+    combinar(ArticulosPosibles, Articulos, Visitas),
+    Visitas =< 50.
+  
+  combinar([], [], 0).
+  combinar([Articulo|ArticulosPosibles], [Articulo|Articulos], TotalVisitas):-
+    combinar(ArticulosPosibles, Articulos, TotalRestoVisitas),
+    noticia(_, Articulo, CantidadVisitas),
+    TotalVisitas is CantidadVisitas + TotalRestoVisitas.
+  combinar([_|ArticulosPosibles], Articulos, TotalVisitas):-
+    combinar(ArticulosPosibles, Articulos, TotalVisitas).
