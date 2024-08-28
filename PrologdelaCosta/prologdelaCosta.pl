@@ -58,7 +58,9 @@ puedeSatisfacerHambre(Grupo, Comida) :-
 satisfaceComida(hamburguesas, Hambre) :- Hambre < 50.
 satisfaceComida(panchitos_con_papas, Hambre) :- Hambre < 50, esChico(Hambre).
 satisfaceComida(lomitoscompletos, _).
-satisfaceComida(caramelos, Hambre) :- Hambre > 0.
+satisfaceComida(caramelos, Hambre) :- 
+    visitante(Nombre, _, _, Dinero, _, _),
+    forall(comida(_, Precio), Precio > Dinero).
 
 esChico(Visitante) :-
     visitante(Visitante, _, Edad, _, _, _),
